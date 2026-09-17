@@ -3,8 +3,11 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'crud/ui_crud.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env.local");
   runApp(const MyApp());
 }
 
@@ -98,7 +101,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<Map<String, dynamic>?> getWeather(double lat, double lon) async {
-    const apiKey = "625b91d1c6cb6bb7958662d3f2cdd80b"; // ganti
+    final apiKey = dotenv.env["API_KEY_WEATHER_MAP"]; // ganti
 
     final url =
         "https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&appid=$apiKey&units=metric";
@@ -114,7 +117,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<List<dynamic>?> get7DaysWeatherVC(double lat, double lon) async {
-    const apiKey = "BVUAF27YU8YVYCZXS5UD3TRRB";
+    final apiKey = dotenv.env["API_KEY_VISUAL_CROSSING"]; // ganti
 
     final url =
         "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/$lat,$lon?unitGroup=metric&key=$apiKey&include=days&elements=datetime,temp,humidity,windspeed,winddir,visibility,conditions,icon";
@@ -159,7 +162,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _loadWeatherFromCity(String city) async {
     // ambil koordinat dari nama kota (OpenWeather Geocoding)
-    const apiKey = "625b91d1c6cb6bb7958662d3f2cdd80b";
+    final apiKey = dotenv.env["API_KEY_WEATHER_MAP"]; // ganti
 
     final geoUrl =
         "https://api.openweathermap.org/geo/1.0/direct?q=$city&limit=1&appid=$apiKey";
@@ -512,6 +515,7 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(padding: EdgeInsets.all(screenHeight * 0.03)),
+
                 Text(
                   'Izinkan App Mengakses Lokasi Perangkat?',
                   style: const TextStyle(
